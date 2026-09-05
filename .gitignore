@@ -1,0 +1,62 @@
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+# Exclude directories and files
+source_hostapps/c++/cdcacm/build/
+source_hostapps/c++/cdcacm_rr/build/
+source_hostapps/c++/hid_cus_libusb/build/
+source_hostapps/c++/msos_winusb/build/
+source_hostapps/c++/hid_cus_winhidapi/Debug/
+source_hostapps/c++/hid_cus_winhidapi/Release/
+source/Debug/
+source/Release/

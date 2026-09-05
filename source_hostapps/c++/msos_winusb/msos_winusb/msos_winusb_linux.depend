@@ -1,0 +1,210 @@
+# depslib dependency file v1.0
+1717451610 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/msos_winusb/align.cpp
+	"align.h"
+
+1720283191 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/msos_winusb/align.h
+	<cstdint>
+
+1742335646 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/core.c
+	"libusbi.h"
+	"version.h"
+	<android/log.h>
+	<stdio.h>
+	<string.h>
+	<syslog.h>
+
+1742335646 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/libusbi.h
+	<config.h>
+	<assert.h>
+	<inttypes.h>
+	<stdarg.h>
+	<stddef.h>
+	<stdlib.h>
+	<sys/time.h>
+	"libusb.h"
+	<stdatomic.h>
+	"os/events_posix.h"
+	"os/threads_posix.h"
+	"os/events_windows.h"
+	"os/threads_windows.h"
+	<stdio.h>
+
+1744470822 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/msos_winusb/libusb_linux/config.h
+
+1742335646 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/libusb.h
+	<basetsd.h>
+	<limits.h>
+	<stdint.h>
+	<sys/types.h>
+	<sys/time.h>
+	<time.h>
+	<windows.h>
+	<winsock.h>
+
+1742335646 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/os/events_posix.h
+	<poll.h>
+
+1742335646 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/os/threads_posix.h
+	<pthread.h>
+
+1742335646 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/os/events_windows.h
+
+1742335646 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/os/threads_windows.h
+
+1742335646 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/version.h
+	"version_nano.h"
+
+1742335646 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/version_nano.h
+
+1742335646 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/descriptor.c
+	"libusbi.h"
+	<string.h>
+
+1742335646 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/hotplug.c
+	"libusbi.h"
+	<stdio.h>
+	<stdlib.h>
+	<time.h>
+	<libusb.h>
+
+1742335646 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/io.c
+	"libusbi.h"
+
+1742335646 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/strerror.c
+	"libusbi.h"
+	<ctype.h>
+	<string.h>
+
+1742335646 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/libusb-1.0.30/libusb/sync.c
+	"libusbi.h"
+	<assert.h>
+	<string.h>
+
+1736032837 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/msos_winusb/cmd_line.cpp
+	"cmd_line.h"
+
+1736032740 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/msos_winusb/cmd_line.h
+	<libusb.h>
+	<cstdint>
+	<string>
+
+1725739419 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/msos_winusb/tru_buffer.cpp
+	"tru_buffer.h"
+	"tru_exception.h"
+	<malloc.h>
+	<string.h>
+
+1744472054 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/msos_winusb/tru_buffer.h
+	"align.h"
+	<cstddef>
+
+1727011062 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/msos_winusb/tru_exception.h
+	"to_string.h"
+	<string>
+	<cstring>
+	<windows.h>
+	<errno.h>
+
+1717451356 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/msos_winusb/to_string.h
+	<string>
+	<iomanip>
+	<sstream>
+
+1744472166 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/msos_winusb/main.cpp
+	"cmd_line.h"
+	"tru_exception.h"
+	"tru_buffer.h"
+	"hp_time_elapsed.h"
+	<libusb.h>
+	<cstdint>
+	<iostream>
+	<format>
+
+1719509971 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/msos_winusb_libusb/msos_winusb/hp_time_elapsed.h
+	<windows.h>
+	<sys/time.h>
+
+1723128462 /usr/include/limits.h
+	<bits/libc-header-start.h>
+	<bits/wordsize.h>
+	<bits/posix1_lim.h>
+	<bits/posix2_lim.h>
+	<bits/xopen_lim.h>
+
+1723128462 /usr/include/stdint.h
+	<bits/libc-header-start.h>
+	<bits/types.h>
+	<bits/wchar.h>
+	<bits/wordsize.h>
+	<bits/stdint-intn.h>
+	<bits/stdint-uintn.h>
+	<bits/stdint-least.h>
+
+1723128462 /usr/include/time.h
+	<features.h>
+	<stddef.h>
+	<bits/time.h>
+	<bits/types/clock_t.h>
+	<bits/types/time_t.h>
+	<bits/types/struct_tm.h>
+	<bits/types/struct_timespec.h>
+	<bits/types/clockid_t.h>
+	<bits/types/timer_t.h>
+	<bits/types/struct_itimerspec.h>
+	<bits/types/locale_t.h>
+
+1723128462 /usr/include/features.h
+	<features-time64.h>
+	<stdc-predef.h>
+	<sys/cdefs.h>
+	<gnu/stubs.h>
+
+1723128462 /usr/include/features-time64.h
+	<bits/wordsize.h>
+	<bits/timesize.h>
+
+1723128462 /usr/include/stdc-predef.h
+
+1723128462 /usr/include/errno.h
+	<features.h>
+	<bits/errno.h>
+	<bits/types/error_t.h>
+
+1723128462 /usr/include/malloc.h
+	<features.h>
+	<stddef.h>
+	<stdio.h>
+
+1723128462 /usr/include/stdio.h
+	<bits/libc-header-start.h>
+	<stddef.h>
+	<stdarg.h>
+	<bits/types.h>
+	<bits/types/__fpos_t.h>
+	<bits/types/__fpos64_t.h>
+	<bits/types/__FILE.h>
+	<bits/types/FILE.h>
+	<bits/types/struct_FILE.h>
+	<bits/types/cookie_io_functions_t.h>
+	<stdarg.h>
+	<bits/stdio_lim.h>
+	<bits/floatn.h>
+	<bits/getopt_posix.h>
+	<bits/stdio2-decl.h>
+	<bits/stdio-ldbl.h>
+	<bits/stdio.h>
+	<bits/stdio2.h>
+
+1723128462 /usr/include/string.h
+	<bits/libc-header-start.h>
+	<stddef.h>
+	<bits/types/locale_t.h>
+	<strings.h>
+	<bits/string_fortified.h>
+
+1723128462 /usr/include/strings.h
+	<features.h>
+	<stddef.h>
+	<bits/types/locale_t.h>
+	<bits/strings_fortified.h>
+

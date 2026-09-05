@@ -1,0 +1,283 @@
+# depslib dependency file v1.0
+1717451610 source:/home/truong/c++/cdcacm_rr/align.cpp
+	"align.h"
+
+1719491830 /home/truong/c++/cdcacm_rr/align.h
+	<stdint.h>
+
+1719494091 source:/home/truong/c++/cdcacm_rr/cmd_error_string.cpp
+	"cmd_error_string.h"
+
+1719494052 /home/truong/c++/cdcacm_rr/cmd_error_string.h
+	"tru_macro.h"
+
+1719493258 /home/truong/c++/cdcacm_rr/tru_macro.h
+
+1719506408 source:/home/truong/c++/cdcacm_rr/cmd_line.cpp
+	"cmd_line.h"
+
+1719506307 /home/truong/c++/cdcacm_rr/cmd_line.h
+	"request.h"
+	<stdbool.h>
+	<stdint.h>
+	<string>
+
+1719494152 /home/truong/c++/cdcacm_rr/request.h
+	"serial_com.h"
+
+1719507376 /home/truong/c++/cdcacm_rr/serial_com.h
+	"tru_macro.h"
+	"tc_string.h"
+	<stdbool.h>
+	<stdint.h>
+	<windows.h>
+	<string>
+	"tru_macro.h"
+	<string>
+	<fcntl.h>
+	<errno.h>
+	<termios.h>
+	<unistd.h>
+
+1719506799 /home/truong/c++/cdcacm_rr/tc_string.h
+	<tchar.h>
+	<string>
+	<sstream>
+	<iomanip>
+
+1719507408 source:/home/truong/c++/cdcacm_rr/request.cpp
+	"request.h"
+	"cmd_error_string.h"
+	"tru_exception.h"
+	"tru_buffer.h"
+	"hp_time_elapsed.h"
+	<iostream>
+
+1719507849 /home/truong/c++/cdcacm_rr/tru_exception.h
+	"to_string.h"
+	<cstdbool>
+	<string>
+	<cstring>
+	<errno.h>
+
+1717451356 /home/truong/c++/cdcacm_rr/to_string.h
+	<string>
+	<iomanip>
+	<sstream>
+
+1719506976 /home/truong/c++/cdcacm_rr/tru_buffer.h
+	"align.h"
+	<stdbool.h>
+	<cstddef>
+
+1719507776 /home/truong/c++/cdcacm_rr/hp_time_elapsed.h
+	<windows.h>
+	<sys/time.h>
+
+1719506736 source:/home/truong/c++/cdcacm_rr/main.cpp
+	"cmd_line.h"
+	"to_string.h"
+	"tru_exception.h"
+	<stdio.h>
+	<iostream>
+
+1719506826 source:/home/truong/c++/cdcacm_rr/tc_string.cpp
+	"tc_string.h"
+
+1717453209 source:/home/truong/c++/cdcacm_rr/tru_buffer.cpp
+	"tru_buffer.h"
+	<malloc.h>
+	<string.h>
+
+1719507376 source:/home/truong/c++/cdcacm_rr/serial_com.cpp
+	"serial_com.h"
+	"tru_exception.h"
+
+1717451610 source:/home/truong/c++/cdcacm_rr/cdcacm_rr/align.cpp
+	"align.h"
+
+1719509971 /home/truong/c++/cdcacm_rr/cdcacm_rr/align.h
+	<cstdint>
+
+1719494091 source:/home/truong/c++/cdcacm_rr/cdcacm_rr/cmd_error_string.cpp
+	"cmd_error_string.h"
+
+1719494052 /home/truong/c++/cdcacm_rr/cdcacm_rr/cmd_error_string.h
+	"tru_macro.h"
+
+1719493258 /home/truong/c++/cdcacm_rr/cdcacm_rr/tru_macro.h
+
+1719508337 source:/home/truong/c++/cdcacm_rr/cdcacm_rr/cmd_line.cpp
+	"cmd_line.h"
+
+1719770988 /home/truong/c++/cdcacm_rr/cdcacm_rr/cmd_line.h
+	"request.h"
+	<cstdbool>
+	<cstdint>
+	<string>
+
+1719775711 /home/truong/c++/cdcacm_rr/cdcacm_rr/request.h
+	"serial_com.h"
+
+1719775819 /home/truong/c++/cdcacm_rr/cdcacm_rr/serial_com.h
+	"tru_macro.h"
+	"tc_string.h"
+	<cstdbool>
+	<cstdint>
+	<windows.h>
+	<string>
+	"tru_macro.h"
+	<string>
+	<fcntl.h>
+	<errno.h>
+	<termios.h>
+	<unistd.h>
+
+1719509981 /home/truong/c++/cdcacm_rr/cdcacm_rr/tc_string.h
+	<tchar.h>
+	<string>
+	<sstream>
+	<iomanip>
+
+1719775839 source:/home/truong/c++/cdcacm_rr/cdcacm_rr/main.cpp
+	"cmd_line.h"
+	"to_string.h"
+	"tru_exception.h"
+	<cstdio>
+	<iostream>
+
+1717451356 /home/truong/c++/cdcacm_rr/cdcacm_rr/to_string.h
+	<string>
+	<iomanip>
+	<sstream>
+
+1719510121 /home/truong/c++/cdcacm_rr/cdcacm_rr/tru_exception.h
+	"to_string.h"
+	<cstdbool>
+	<string>
+	<cstring>
+	<errno.h>
+
+1719770797 source:/home/truong/c++/cdcacm_rr/cdcacm_rr/serial_com.cpp
+	"serial_com.h"
+	"tru_exception.h"
+	<stdio.h>
+
+1719506826 source:/home/truong/c++/cdcacm_rr/cdcacm_rr/tc_string.cpp
+	"tc_string.h"
+
+1717453209 source:/home/truong/c++/cdcacm_rr/cdcacm_rr/tru_buffer.cpp
+	"tru_buffer.h"
+	<malloc.h>
+	<string.h>
+
+1719509998 /home/truong/c++/cdcacm_rr/cdcacm_rr/tru_buffer.h
+	"align.h"
+	<cstdbool>
+	<cstddef>
+
+1719775711 source:/home/truong/c++/cdcacm_rr/cdcacm_rr/request.cpp
+	"request.h"
+	"cmd_error_string.h"
+	"tru_exception.h"
+	"tru_buffer.h"
+	"hp_time_elapsed.h"
+	<iostream>
+
+1719509971 /home/truong/c++/cdcacm_rr/cdcacm_rr/hp_time_elapsed.h
+	<windows.h>
+	<sys/time.h>
+
+1717451610 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/align.cpp
+	"align.h"
+
+1719509971 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/align.h
+	<cstdint>
+
+1741547775 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/cmd_line.cpp
+	"cmd_line.h"
+
+1741547436 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/cmd_line.h
+	"request.h"
+	<cstdint>
+	<string>
+
+1741547627 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/request.h
+	"serial_com.h"
+
+1744413764 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/serial_com.h
+	"tru_macro.h"
+	"tc_string.h"
+	<windows.h>
+	<cstdint>
+	<string>
+	"tru_macro.h"
+	<cstdint>
+	<string>
+	<fcntl.h>
+	<errno.h>
+	<unistd.h>
+	<termios.h>
+
+1725720829 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/tru_macro.h
+
+1719509981 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/tc_string.h
+	<tchar.h>
+	<string>
+	<sstream>
+	<iomanip>
+
+1741547450 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/main.cpp
+	"cmd_line.h"
+	"to_string.h"
+	"tru_exception.h"
+	<iostream>
+
+1717451356 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/to_string.h
+	<string>
+	<iomanip>
+	<sstream>
+
+1727011062 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/tru_exception.h
+	"to_string.h"
+	<string>
+	<cstring>
+	<windows.h>
+	<errno.h>
+
+1744414276 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/serial_com.cpp
+	"serial_com.h"
+	"tru_exception.h"
+	<stdio.h>
+	<sys/ioctl.h>
+
+1719506826 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/tc_string.cpp
+	"tc_string.h"
+
+1725738929 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/tru_buffer.cpp
+	"tru_buffer.h"
+	"tru_exception.h"
+	<malloc.h>
+	<string.h>
+
+1720283299 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/tru_buffer.h
+	"align.h"
+	<cstddef>
+
+1744408510 source:/home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/request.cpp
+	"request.h"
+	"app_error_string.h"
+	"tru_exception.h"
+	"tru_buffer.h"
+	"hp_time_elapsed.h"
+	<iostream>
+	<format>
+
+1725739175 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/app_error_string.h
+	"tru_macro.h"
+	<cstdint>
+
+1719509971 /home/truong/Programming/de10nano-c/tru_usb/tru_usb_client_c++/cdcacm_rr/cdcacm_rr/hp_time_elapsed.h
+	<windows.h>
+	<sys/time.h>
+

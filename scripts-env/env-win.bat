@@ -1,0 +1,37 @@
+@ECHO OFF
+
+:: Get the parent folder path (one level up) from this script's path
+FOR %%i IN ("%~dp0..") DO SET "SCRIPT_PATH=%%~fi"
+::FOR %%i IN ("%~dp0..") DO SET "SCRIPT_PATH=%%~dpi"
+
+:: Tools settings
+SET MAKE_PATH=C:\devtools\xpack-windows-build-tools-4.4.1-3\bin
+SET TOOLCHAIN_PATH=C:\devtools\xpack-arm-none-eabi-gcc-14.2.1-1.1\bin
+SET OPENOCD_PATH=C:\devtools\xpack-openocd-0.12.0-7\bin
+
+:: Application settings
+SET APP_HOME_PATH=%SCRIPT_PATH%
+SET APP_OUT_PATH=.
+SET APP_SRC_PATH1=source
+SET APP_PROGRAM_NAME1=tru_usb
+
+:: Other stuff
+CALL :NORMALIZEPATH %APP_OUT_PATH%
+SET APP_OUT_FULL_PATH=%RETVAL%
+
+:: Search path settings
+SET path=%path%;%SCRIPT_PATH%\scripts-env;%SCRIPT_PATH%\scripts-win
+IF "%MAKE_PATH%" NEQ "" SET path=%path%;%MAKE_PATH%
+IF "%TOOLCHAIN_PATH%" NEQ "" SET path=%path%;%TOOLCHAIN_PATH%
+IF "%OPENOCD_PATH%" NEQ "" SET path=%path%;%OPENOCD_PATH%
+
+:: Messages
+IF "%MAKE_PATH%" NEQ ""      ECHO Make     : %MAKE_PATH%
+IF "%TOOLCHAIN_PATH%" NEQ "" ECHO Toolchain: %TOOLCHAIN_PATH%
+IF "%OPENOCD_PATH%" NEQ ""   ECHO OpenOCD  : %OPENOCD_PATH%
+
+EXIT /B
+
+:NORMALIZEPATH
+  SET RETVAL=%~f1
+  EXIT /B

@@ -1,0 +1,3 @@
+@CALL env-win.bat
+%TESTAPP% path=%SERIALPATH% cmd=tx timeout=3000 len=65535 runs=100
+@pause

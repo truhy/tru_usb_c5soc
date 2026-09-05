@@ -1,0 +1,7 @@
+﻿  main.cpp
+  Generating code
+  0 of 546 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  hid_cus.vcxproj -> D:\Documents\Programming\FPGA\de10nano-c\tru_usb\tru_usb_hostapp_c++\hid_cus_winhidapi\Release\hid_cus.exe

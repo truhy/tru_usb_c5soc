@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="msos_winusb" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="../build/linux/Debug/msos_winusb" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../build/linux/obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-std=c++20" />
+					<Add option="-g" />
+					<Add directory="../libusb-1.0.30/libusb" />
+					<Add directory="libusb_linux" />
+				</Compiler>
+				<Linker>
+					<Add option="-ludev" />
+				</Linker>
+			</Target>
+			<Target title="Release">
+				<Option output="../build/linux/Release/msos_winusb" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../build/linux/obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+					<Add option="-std=c++20" />
+					<Add directory="../libusb-1.0.30/libusb" />
+					<Add directory="libusb_linux" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-ludev" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="../libusb-1.0.30/libusb/core.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../libusb-1.0.30/libusb/descriptor.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../libusb-1.0.30/libusb/hotplug.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../libusb-1.0.30/libusb/io.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../libusb-1.0.30/libusb/libusb.h" />
+		<Unit filename="../libusb-1.0.30/libusb/libusbi.h" />
+		<Unit filename="../libusb-1.0.30/libusb/os/events_posix.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../libusb-1.0.30/libusb/os/events_posix.h" />
+		<Unit filename="../libusb-1.0.30/libusb/os/linux_netlink.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../libusb-1.0.30/libusb/os/linux_udev.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../libusb-1.0.30/libusb/os/linux_usbfs.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../libusb-1.0.30/libusb/os/linux_usbfs.h" />
+		<Unit filename="../libusb-1.0.30/libusb/os/threads_posix.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../libusb-1.0.30/libusb/os/threads_posix.h" />
+		<Unit filename="../libusb-1.0.30/libusb/strerror.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../libusb-1.0.30/libusb/sync.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="../libusb-1.0.30/libusb/version.h" />
+		<Unit filename="../libusb-1.0.30/libusb/version_nano.h" />
+		<Unit filename="align.cpp" />
+		<Unit filename="align.h" />
+		<Unit filename="cmd_line.cpp" />
+		<Unit filename="cmd_line.h" />
+		<Unit filename="hp_time_elapsed.h" />
+		<Unit filename="libusb_linux/config.h" />
+		<Unit filename="main.cpp" />
+		<Unit filename="to_string.h" />
+		<Unit filename="tru_buffer.cpp" />
+		<Unit filename="tru_buffer.h" />
+		<Unit filename="tru_exception.h" />
+		<Extensions />
+	</Project>
+</CodeBlocks_project_file>

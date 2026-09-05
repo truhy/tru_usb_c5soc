@@ -1,0 +1,3 @@
+@ECHO OFF
+SET SERIALPATH=\\.\COM60
+SET PYSCRIPT=cdcacm_rr.py
