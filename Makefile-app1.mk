@@ -64,11 +64,12 @@ SRCS := \
 	$(wildcard $(APP_SRC_PATH1)/trulib/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/trulib/arm/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/trulib/c5soc/*.c) \
-	$(wildcard $(APP_SRC_PATH1)/trulib/c5soc/usb_examples/device/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/trulib/usb/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/trulib/usb/synopsys/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/trulib/usb/dclass/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/trulib/usb_examples/device/*.c) \
+	$(wildcard $(APP_SRC_PATH1)/tru_usb_device/common/*.c) \
+	$(wildcard $(APP_SRC_PATH1)/tru_usb_device/c5soc/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/CMSIS/Core/Source/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/CMSIS/Device/c5soc/source/*.c)
 
