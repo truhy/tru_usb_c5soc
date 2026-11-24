@@ -783,7 +783,7 @@ extern "C" {
 #define TRU_DWC2_DEV_DFIFO_PER_SIZE                       0x1000
 #define TRU_DWC2_DEV_DFIFO_L2_WRITE_BOUNDARY              0x1000
 #define TRU_DWC2_DEV_DFIFO_RX_ADDR(usb_base_addr)         ((volatile uint32_t *const)((char *)usb_base_addr + TRU_DWC2_DEV_DFIFO_OFFSET))
-#define TRU_DWC2_DEV_DFIFO_TX_ADDR(usb_base_addr, ep_num) ((volatile uint32_t *const)((char *)usb_base_addr + TRU_DWC2_DEV_DFIFO_OFFSET + ep_num * TRU_DWC2_DEV_DFIFO_PER_SIZE))
+#define TRU_DWC2_DEV_DFIFO_TX_ADDR(usb_base_addr, fifonum) ((volatile uint32_t *const)((char *)usb_base_addr + TRU_DWC2_DEV_DFIFO_OFFSET + fifonum * TRU_DWC2_DEV_DFIFO_PER_SIZE))
 
 // Scatter Gather DMA descriptor status
 typedef union{
@@ -2127,7 +2127,7 @@ typedef union{
 	}bits;
 }tru_dwc2_diepctl_t;
 
-#define TRU_DWC2_DIEPCTL_REG(usb_base_addr, fifonum) ((volatile tru_dwc2_diepctl_reg_t *const)((char *)usb_base_addr + (0x20 * fifonum) + TRU_DWC2_DIEPCTL0_OFFSET))
+#define TRU_DWC2_DIEPCTL_REG(usb_base_addr, ep_num) ((volatile tru_dwc2_diepctl_reg_t *const)((char *)usb_base_addr + (0x20 * ep_num) + TRU_DWC2_DIEPCTL0_OFFSET))
 
 typedef union{
 	volatile uint32_t val;
@@ -2174,7 +2174,7 @@ typedef union{
 	}bits;
 }tru_dwc2_diepint_t;
 
-#define TRU_DWC2_DIEPINT_REG(usb_base_addr, fifonum) ((volatile tru_dwc2_diepint_reg_t *const)((char *)usb_base_addr + (0x20 * fifonum) + TRU_DWC2_DIEPINT0_OFFSET))
+#define TRU_DWC2_DIEPINT_REG(usb_base_addr, ep_num) ((volatile tru_dwc2_diepint_reg_t *const)((char *)usb_base_addr + (0x20 * ep_num) + TRU_DWC2_DIEPINT0_OFFSET))
 
 typedef union{
 	volatile uint32_t val;
@@ -2197,13 +2197,13 @@ typedef union{
 	}bits;
 }tru_dwc2_dieptsiz_t;
 
-#define TRU_DWC2_DIEPTSIZ_REG(usb_base_addr, fifonum) ((volatile tru_dwc2_dieptsiz_reg_t *const)((char *)usb_base_addr + (0x20 * fifonum) + TRU_DWC2_DIEPTSIZ0_OFFSET))
+#define TRU_DWC2_DIEPTSIZ_REG(usb_base_addr, ep_num) ((volatile tru_dwc2_dieptsiz_reg_t *const)((char *)usb_base_addr + (0x20 * ep_num) + TRU_DWC2_DIEPTSIZ0_OFFSET))
 
 typedef struct{
 	volatile uint32_t buf;
 }tru_dwc2_diepdma_reg_t;
 
-#define TRU_DWC2_DIEPDMA_REG(usb_base_addr, fifonum) ((volatile tru_dwc2_diepdma_reg_t *const)((char *)usb_base_addr + (0x20 * fifonum) + TRU_DWC2_DIEPDMA0_OFFSET))
+#define TRU_DWC2_DIEPDMA_REG(usb_base_addr, ep_num) ((volatile tru_dwc2_diepdma_reg_t *const)((char *)usb_base_addr + (0x20 * ep_num) + TRU_DWC2_DIEPDMA0_OFFSET))
 
 typedef union{
 	volatile uint32_t val;
@@ -2213,13 +2213,13 @@ typedef union{
 	}bits;
 }tru_dwc2_dtxfsts_reg_t;
 
-#define TRU_DWC2_DTXFSTS_REG(usb_base_addr, fifonum) ((volatile tru_dwc2_dtxfsts_reg_t *const)((char *)usb_base_addr + (0x20 * fifonum) + TRU_DWC2_DTXFSTS0_OFFSET))
+#define TRU_DWC2_DTXFSTS_REG(usb_base_addr, ep_num) ((volatile tru_dwc2_dtxfsts_reg_t *const)((char *)usb_base_addr + (0x20 * ep_num) + TRU_DWC2_DTXFSTS0_OFFSET))
 
 typedef struct{
 	volatile uint32_t buf;
 }tru_dwc2_diepdmab_reg_t;
 
-#define TRU_DWC2_DIEPDMAB_REG(usb_base_addr, fifonum) ((volatile tru_dwc2_diepdmab_reg_t *const)((char *)usb_base_addr + (0x20 * fifonum) + TRU_DWC2_DIEPDMAB0_OFFSET))
+#define TRU_DWC2_DIEPDMAB_REG(usb_base_addr, ep_num) ((volatile tru_dwc2_diepdmab_reg_t *const)((char *)usb_base_addr + (0x20 * ep_num) + TRU_DWC2_DIEPDMAB0_OFFSET))
 
 typedef union{
 	volatile uint32_t val;
@@ -2334,7 +2334,7 @@ typedef union{
 	}bits;
 }tru_dwc2_doepctl_t;
 
-#define TRU_DWC2_DOEPCTL_REG(usb_base_addr, fifonum) ((volatile tru_dwc2_doepctl_reg_t *const)((char *)usb_base_addr + (0x20 * fifonum) + TRU_DWC2_DOEPCTL0_OFFSET))
+#define TRU_DWC2_DOEPCTL_REG(usb_base_addr, ep_num) ((volatile tru_dwc2_doepctl_reg_t *const)((char *)usb_base_addr + (0x20 * ep_num) + TRU_DWC2_DOEPCTL0_OFFSET))
 
 typedef union{
 	volatile uint32_t val;
@@ -2383,7 +2383,7 @@ typedef union{
 	}bits;
 }tru_dwc2_doepint_t;
 
-#define TRU_DWC2_DOEPINT_REG(usb_base_addr, fifonum) ((volatile tru_dwc2_doepint_reg_t *const)((char *)usb_base_addr + (0x20 * fifonum) + TRU_DWC2_DOEPINT0_OFFSET))
+#define TRU_DWC2_DOEPINT_REG(usb_base_addr, ep_num) ((volatile tru_dwc2_doepint_reg_t *const)((char *)usb_base_addr + (0x20 * ep_num) + TRU_DWC2_DOEPINT0_OFFSET))
 
 typedef union{
 	volatile uint32_t val;
@@ -2406,13 +2406,13 @@ typedef union{
 	}bits;
 }tru_dwc2_doeptsiz_t;
 
-#define TRU_DWC2_DOEPTSIZ_REG(usb_base_addr, fifonum) ((volatile tru_dwc2_doeptsiz_reg_t *const)((char *)usb_base_addr + (0x20 * fifonum) + TRU_DWC2_DOEPTSIZ0_OFFSET))
+#define TRU_DWC2_DOEPTSIZ_REG(usb_base_addr, ep_num) ((volatile tru_dwc2_doeptsiz_reg_t *const)((char *)usb_base_addr + (0x20 * ep_num) + TRU_DWC2_DOEPTSIZ0_OFFSET))
 
 typedef struct{
 	volatile uint32_t buf;
 }tru_dwc2_doepdma_reg_t;
 
-#define TRU_DWC2_DOEPDMA_REG(usb_base_addr, fifonum) ((volatile tru_dwc2_doepdma_reg_t *const)((char *)usb_base_addr + (0x20 * fifonum) + TRU_DWC2_DOEPDMA0_OFFSET))
+#define TRU_DWC2_DOEPDMA_REG(usb_base_addr, ep_num) ((volatile tru_dwc2_doepdma_reg_t *const)((char *)usb_base_addr + (0x20 * ep_num) + TRU_DWC2_DOEPDMA0_OFFSET))
 
 typedef union{
 	volatile uint32_t val;
@@ -2517,7 +2517,11 @@ typedef struct{
 	uint32_t snpsid;
 	uint32_t num_dev_ep;
 	uint32_t num_dev_in_ep;
-	uint32_t fifo_size_words;
+	uint32_t fifo_total_size_words;
+	uint32_t fifo_usable_size_words;
+	uint32_t tknqdepth;
+	uint32_t ptxqdepth;
+	uint32_t nptxqdepth;
 	uint32_t max_transfer_size;
 	uint32_t max_packet_count;
 	uint32_t dma_arch;

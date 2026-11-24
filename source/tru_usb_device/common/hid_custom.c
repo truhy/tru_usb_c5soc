@@ -1,7 +1,7 @@
 #include "hid_custom.h"
 #include "tru_logger.h"
 
-// Weak function prototypes
+// Prototypes with weak implementation.  Override at application level
 __attribute__((weak)) void hid_cus_cb_setup_buffers(void);
 
 // Function prototypes

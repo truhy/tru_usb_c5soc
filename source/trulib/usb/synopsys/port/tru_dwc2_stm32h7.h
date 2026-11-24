@@ -42,8 +42,18 @@ extern "C" {
 // Hardware limitations
 // ====================
 
-// There is a bug in STM32H7 DWC2 version 3.30a in slave mode (manual FIFO transfer mode), only a maximum of seven packets can be pushed into the TXFIFO - most likely related to the 3-bit packet counter size of the DIEPTSIZ register
-// This doesn't affect the DMA modes.
+// In slave mode (manual FIFO transfer mode) there is a hardware limitation that appears to be related to in internal
+// fifo queue counter. Only a maximum of n packets can be pushed into the TXFIFO at once (i.e. together with DIEPTSIZx).
+// This becomes a problem in full-speed mode because the speed is slow enough where host is not pulling the data off
+// fast enough from the queue.  In high-speed mode we don't normally see a problem because it is fast.
+// Note, this does not apply to DMA modes
+// Some STM32 reference manuals describes an internal counter, for instance see STM32H446RE RM0390, page 1245:
+// "Every time a packet is written into the transmit FIFO by the application, the transfer size for that endpoint is
+// decremented by the packet size. The data is fetched from the memory by the application, until the transfer size
+// for the endpoint becomes 0. After writing the data into the FIFO, the “number of packets in FIFO” count is incremented
+// (this is a 3-bit count, internally maintained by the core for each IN endpoint transmit FIFO. The maximum number of
+// packets maintained by the core at any time in an IN endpoint FIFO is eight). For zero-length packets, a separate flag
+// is set for each FIFO, without any data in the FIFO."
 #define TRU_DWC2_DEV_MAX_TXFIFO_PACKETS 7
 
 // ========

@@ -1,6 +1,6 @@
 #include "cdcacm_rr_multi.h"
 
-// Weak function prototypes
+// Prototypes with weak implementation.  Override at application level
 __attribute__((weak)) void cdcacm_rr_multi_cb_setup_buffers(void);
 
 // Function prototypes

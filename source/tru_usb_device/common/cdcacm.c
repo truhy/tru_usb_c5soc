@@ -9,7 +9,7 @@ static uint32_t transmit_data(tru_usb_pc_t *pc, uint8_t ep_num, uint32_t write_l
 static void echo(tru_usb_cdc_t *cdc, bool holding_buffer);
 #endif
 
-// Weak function prototypes
+// Prototypes with weak implementation.  Override at application level
 __attribute__((weak)) void cdcacm_cb_setup_buffers(void);
 
 // Function prototypes

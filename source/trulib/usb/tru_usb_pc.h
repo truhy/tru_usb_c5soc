@@ -98,8 +98,8 @@ typedef struct{
 	tru_usb_pc_eps_t eps;                    // USB peripheral controller endpoints
 	uint8_t speed_sel;                       // Device speed select
 	uint8_t speed;                           // Current enumerated speed
-	uint32_t sof_per_sec;                    // Current speed SOF rate
-	uint32_t sof_div;                        // Divider to convert current speed to low speed SOF rate
+	uint32_t sof_per_sec;                    // Number of SOF counts per second, i.e. SOF rate
+	uint32_t sof_per_ms;                     // Number of SOF counts per millisecond, i.e. SOF rate
 	tru_usb_setup_t setup;                   // USB setup request
 	tru_usb_pc_dev_state_t state;            // USB device state
 	uint16_t status;                         // USB device status used by GET_STATUS, CLEAR_FEATURE, SET_FEATURE

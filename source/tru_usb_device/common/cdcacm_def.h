@@ -90,8 +90,10 @@ it stays waiting for the transfer complete interrupt, which will never happen
 because Windows does not send the EP OUT token to accept the ZLP.  Depending
 on your GetCommTimeouts() and SetCommTimeouts() settings (Win32 API functions),
 Windows host application will:
-	- timed out, then you lose data
-	- wait forever until a ZLP or more data is received, no data loss
+	- timeout and you lose data
+	- wait forever, which makes the host looks like it has hanged.  Sending
+	  more and enough data will unhang it, but we may have nothing to send at
+	  this time, i.e. our data is not a continuous stream
 Windows USB serial driver (usbser.sys) always schedules URB requests (driver
 to kernel requests) with 4096 bytes so it expects to receive 4K chunks, but
 because our transfer is a stream consisting of multiple packets, the expected

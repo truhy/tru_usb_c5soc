@@ -36,13 +36,19 @@ void tru_dwc2_get_hwcfg_snpsid(void *usb_base_addr, tru_dwc2_hwcfg_t *hwcfg){
 
 void tru_dwc2_get_hwcfg(void *usb_base_addr, tru_dwc2_hwcfg_t *hwcfg){
 	hwcfg->snpsid = TRU_DWC2_GSNPSID_REG(usb_base_addr)->bits.gsnpsid;
-	hwcfg->num_dev_ep = TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.numdeveps + 1;
-	hwcfg->num_dev_in_ep = TRU_DWC2_GHWCFG4_REG(usb_base_addr)->bits.ineps + 1;
-	hwcfg->fifo_size_words = TRU_DWC2_GHWCFG3_REG(usb_base_addr)->bits.dfifodepth;  // Usable FIFO space, excludes EP info reserved space
-	hwcfg->max_transfer_size = (1 << (TRU_DWC2_GHWCFG3_REG(usb_base_addr)->bits.xfersizewidth + 11)) - 1;
-	hwcfg->max_packet_count = (1 << (TRU_DWC2_GHWCFG3_REG(usb_base_addr)->bits.pktsizewidth + 4)) - 1;
+
+	hwcfg->num_dev_ep = TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.numdeveps + 1;  // Increment to include EP0
+	hwcfg->tknqdepth = TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.tknqdepth;
+	hwcfg->ptxqdepth = TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.ptxqdepth;
+	hwcfg->nptxqdepth = TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.nptxqdepth;
 	hwcfg->dma_arch = TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.dmaarch;
 	hwcfg->dma_capable = (hwcfg->dma_arch == TRU_DWC2_GHWCFG2_DMA_NONE) ? false : true;
+
+	hwcfg->fifo_usable_size_words = TRU_DWC2_GHWCFG3_REG(usb_base_addr)->bits.dfifodepth;  // Usable FIFO space, excludes EP info reserved space
+	hwcfg->max_transfer_size = (1 << (TRU_DWC2_GHWCFG3_REG(usb_base_addr)->bits.xfersizewidth + 11)) - 1;
+	hwcfg->max_packet_count = (1 << (TRU_DWC2_GHWCFG3_REG(usb_base_addr)->bits.pktsizewidth + 4)) - 1;
+
+	hwcfg->num_dev_in_ep = TRU_DWC2_GHWCFG4_REG(usb_base_addr)->bits.ineps + 1;  // Increment to include EP0
 	hwcfg->dma_desc_capable = TRU_DWC2_GHWCFG4_REG(usb_base_addr)->bits.dma ? true : false;
 }
 
@@ -550,6 +556,7 @@ void tru_dwc2_grstctl_reset(void *usb_base_addr, uint32_t snpsid){
 		TRU_DWC2_GRSTCTL_REG(usb_base_addr)->bits.csftrst = 1;  // Enable core reset
 		while(TRU_DWC2_GRSTCTL_REG(usb_base_addr)->bits.csftrst_done == 0);  // Wait for core reset done register to become 1, i.e. to complete
 
+		// Note: GRSTCTL.CSFTRST is not self clearing, even though some reference manuals says that it self clears
 		tru_dwc2_grstctl_t grstctl = { .val = TRU_DWC2_GRSTCTL_REG(usb_base_addr)->val };
 		grstctl.bits.csftrst = 0;  // Disable core reset bit
 		grstctl.bits.csftrst_done = 1;
@@ -615,6 +622,10 @@ void tru_dwc2_init_gusbcfg_phy(void *usb_base_addr, tru_dwc2_phy_t *phy, bool fo
 				gusbcfg.bits.ulpi = TRU_DWC2_GUSBCFG_ULPI_ENA;
 				break;
 			case TRU_DWC2_PHYIFTYPE_UTMI:
+				gusbcfg.bits.ulpifsl = 0;
+				gusbcfg.bits.ulpiclksusm = 0;
+				gusbcfg.bits.ulpi = TRU_DWC2_GUSBCFG_ULPI_DIS;
+
 				if(phy->width == TRU_DWC2_PHYWIDTH_8BIT){
 					gusbcfg.bits.phyif = TRU_DWC2_GUSBCFG_PHYIF_8BIT;
 					if(tru_dwc2_is_device_mode(usb_base_addr)){
@@ -626,10 +637,6 @@ void tru_dwc2_init_gusbcfg_phy(void *usb_base_addr, tru_dwc2_phy_t *phy, bool fo
 						gusbcfg.bits.usbtrdtim = 9;
 					}
 				}
-
-				gusbcfg.bits.ulpifsl = 0;
-				gusbcfg.bits.ulpiclksusm = 0;
-				gusbcfg.bits.ulpi = TRU_DWC2_GUSBCFG_ULPI_DIS;
 				break;
 			default:
 		}
@@ -637,19 +644,28 @@ void tru_dwc2_init_gusbcfg_phy(void *usb_base_addr, tru_dwc2_phy_t *phy, bool fo
 		gusbcfg.bits.physel = TRU_DWC2_GUSBCFG_PHYSEL_USB20;
 
 		switch(phy->iftype){
+			case TRU_DWC2_PHYIFTYPE_INTERNAL:
+				gusbcfg.bits.ulpifsl = 0;
+				gusbcfg.bits.ulpiclksusm = 0;
+				gusbcfg.bits.ulpi = TRU_DWC2_GUSBCFG_ULPI_DIS;
+				break;
 			case TRU_DWC2_PHYIFTYPE_ULPI:
 				gusbcfg.bits.ulpi_utmi_sel = TRU_DWC2_GUSBCFG_ULPI_UTMI_SEL_ULPI;
+				gusbcfg.bits.ulpifsl = 0;
+				gusbcfg.bits.ulpiclksusm = 0;
+				gusbcfg.bits.ulpi = TRU_DWC2_GUSBCFG_ULPI_ENA;
 
 				if(phy->rate == TRU_DWC2_PHYRATE_SDR){
 					gusbcfg.bits.ddrsel = TRU_DWC2_GUSBCFG_DDRSEL_SDR;
 				}else{
 					gusbcfg.bits.ddrsel = TRU_DWC2_GUSBCFG_DDRSEL_DDR;
 				}
-
-				gusbcfg.bits.ulpi = TRU_DWC2_GUSBCFG_ULPI_ENA;
 				break;
 			case TRU_DWC2_PHYIFTYPE_UTMI:
 				gusbcfg.bits.ulpi_utmi_sel = TRU_DWC2_GUSBCFG_ULPI_UTMI_SEL_UTMI;
+				gusbcfg.bits.ulpifsl = 0;
+				gusbcfg.bits.ulpiclksusm = 0;
+				gusbcfg.bits.ulpi = TRU_DWC2_GUSBCFG_ULPI_DIS;
 
 				if(phy->width == TRU_DWC2_PHYWIDTH_8BIT){
 					gusbcfg.bits.phyif = TRU_DWC2_GUSBCFG_PHYIF_8BIT;
@@ -662,14 +678,9 @@ void tru_dwc2_init_gusbcfg_phy(void *usb_base_addr, tru_dwc2_phy_t *phy, bool fo
 						gusbcfg.bits.usbtrdtim = 9;
 					}
 				}
-
 				break;
 			default:
 		}
-
-		gusbcfg.bits.ulpifsl = 0;
-		gusbcfg.bits.ulpiclksusm = 0;
-		gusbcfg.bits.ulpi = TRU_DWC2_GUSBCFG_ULPI_DIS;
 	}
 	gusbcfg.bits.ulpiautores = TRU_DWC2_GUSBCFG_ULPIAUTORES_DIS;
 	gusbcfg.bits.ulpiextvbusdrv = TRU_DWC2_GUSBCFG_ULPIEXTVBUSDRV_INT;
@@ -680,17 +691,9 @@ void tru_dwc2_init_gusbcfg_phy(void *usb_base_addr, tru_dwc2_phy_t *phy, bool fo
 	gusbcfg.bits.txenddelay = TRU_DWC2_GUSBCFG_TXENDDELAY_NORMAL;
 	gusbcfg.bits.corrupttxpkt = TRU_DWC2_GUSBCFG_CORRUPTTXPKT_NORMAL;
 
-	TRU_DWC2_GUSBCFG_REG(usb_base_addr)->val = gusbcfg.val;
-}
-
-// Setup non USB-PHY related configuration settings
-void tru_dwc2_init_gusbcfg(void *usb_base_addr){
-	tru_dwc2_gusbcfg_t gusbcfg = { .val = TRU_DWC2_GUSBCFG_REG(usb_base_addr)->val };
-
 	gusbcfg.bits.toutcal = 0x7;
 	gusbcfg.bits.srpcap = TRU_DWC2_GUSBCFG_SRPCAP_DIS;
 	gusbcfg.bits.hnpcap = TRU_DWC2_GUSBCFG_HNPCAP_DIS;
-	gusbcfg.bits.ulpi = 0;
 
 	TRU_DWC2_GUSBCFG_REG(usb_base_addr)->val = gusbcfg.val;
 }
@@ -724,7 +727,7 @@ void tru_dwc2_init_gccfg(void *usb_base_addr, tru_dwc2_phy_t *phy){
 void tru_dwc2_init_dcfg(void *usb_base_addr, tru_dwc2_phy_t *phy, tru_dwc2_dma_mode_t dma_mode, uint8_t devspd){
 	tru_dwc2_dcfg_t dcfg = { .val = TRU_DWC2_DCFG_REG(usb_base_addr)->val };
 
-	dcfg.bits.devspd = devspd;  // Set high-speed
+	dcfg.bits.devspd = devspd;  // Enumerated speed limit
 	dcfg.bits.nzstsouthshk = 0;
 	dcfg.bits.ena32khzsusp = 0;
 	dcfg.bits.devaddr = 0;
@@ -827,15 +830,15 @@ void tru_dwc2_log_details(void *usb_base_addr, uint32_t num_dev_in_ep){
 	}
 
 	LOG("Version: %.1x.%.3x\n", (unsigned int)sid >> 12 & 0xf, (unsigned int)sid & 0xfff);
-	LOG("Num of device mode endpoints: %u\n", TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.numdeveps + 1);
+	LOG("Num of device mode endpoints: %u\n", TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.numdeveps + 1);  // Increment to include EP0
 	LOG("Num of IN endpoints: %u\n", TRU_DWC2_GHWCFG4_REG(usb_base_addr)->bits.ineps + 1);
 	LOG("Token queue depth: %u\n", TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.tknqdepth);
-	LOG("Periodic TX FIFO queue depth: %u\n", 1 << (TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.ptxqdepth + 1));
-	LOG("Non-periodic TX FIFO queue depth: %u\n", 1 << (TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.nptxqdepth + 1));
+	LOG("Periodic TX FIFO queue depth: %u\n", TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.ptxqdepth);
+	LOG("Non-periodic TX FIFO queue depth: %u\n", TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.nptxqdepth);
 	LOG("Dynamic FIFO sizing capable: %s\n", TRU_DWC2_GHWCFG2_REG(usb_base_addr)->bits.dynfifosizing ? "Yes" : "No");
 	LOG("Transfer size width (bits): %u\n", TRU_DWC2_GHWCFG3_REG(usb_base_addr)->bits.xfersizewidth + 11);
 	LOG("Packet size counter width (bits): %u\n", TRU_DWC2_GHWCFG3_REG(usb_base_addr)->bits.pktsizewidth + 4);
-	LOG("FIFO total size: %lu words (%lu bytes)\n", TRU_DWC2_GDFIFOCFG_REG(usb_base_addr)->val & 0xffff, (TRU_DWC2_GDFIFOCFG_REG(usb_base_addr)->val & 0xffff) * 4);
+	LOG("FIFO total size: %u words (%u bytes)\n", TRU_DWC2_GDFIFOCFG_REG(usb_base_addr)->bits.gdfifocfg, TRU_DWC2_GDFIFOCFG_REG(usb_base_addr)->bits.gdfifocfg * 4);
 	LOG("FIFO usable size: %u words (%u bytes)\n", TRU_DWC2_GHWCFG3_REG(usb_base_addr)->bits.dfifodepth, TRU_DWC2_GHWCFG3_REG(usb_base_addr)->bits.dfifodepth * 4);
 	LOG("Dedicated FIFO in device mode: %s\n", TRU_DWC2_GHWCFG4_REG(usb_base_addr)->bits.dedfifomode ? "Yes" : "No");
 
@@ -1270,14 +1273,13 @@ uint16_t tru_dwc2_get_txfifo_freespace_words(void *usb_base_addr, tru_dwc2_txfif
 
 	Constraints that apply to FIFO slave mode and particular versions of the DWC2 OTG USB IP:
 	- ensure the TX FIFO free space is always zero or a multiple of max packet size
-	- only a maximum of seven packets can be pushed into the TXFIFO (applies to 2.30, but not 2.90A)
 */
-uint32_t tru_dwc2_max_xfer_epin(void *usb_base_addr, uint8_t ep_num, uint32_t xfer_size, uint32_t ep_xfer_limit, uint16_t mps, tru_dwc2_dma_mode_t dma_mode, tru_dwc2_txfifo_mode_t txfifo_mode, uint32_t max_packet_count, uint32_t max_transfer_size){
+uint32_t tru_dwc2_get_max_xfer_epin(void *usb_base_addr, uint8_t ep_num, uint32_t xfer_size, uint32_t ep_xfer_limit, uint16_t mps, tru_dwc2_dma_mode_t dma_mode, tru_dwc2_txfifo_mode_t txfifo_mode, tru_dwc2_hwcfg_t *hwcfg){
 	if(dma_mode == TRU_DWC2_DMA_MODE_SG) return xfer_size;  // This is handled by the SGDMA descriptor function instead
 
 	uint32_t max_xfer_size = (ep_xfer_limit == 0) ? xfer_size : (xfer_size > ep_xfer_limit) ? ep_xfer_limit : xfer_size;
-	uint32_t max_xfer_limit_by_reg_size = (ep_num == 0) ? TRU_DWC2_DIEPTSIZ0_XFERSIZE_SET_MSK / mps * mps : max_transfer_size / mps * mps;  // Multiple of max packet size
-	uint32_t max_xfer_limit_by_reg_mps = (ep_num == 0) ? TRU_DWC2_DEV_EP_EP0_MAX_PACKET_COUNT * mps : max_packet_count * mps;  // Multiple of max packet size
+	uint32_t max_xfer_limit_by_reg_size = (ep_num == 0) ? TRU_DWC2_DIEPTSIZ0_XFERSIZE_SET_MSK / mps * mps : hwcfg->max_transfer_size / mps * mps;  // Multiple of max packet size
+	uint32_t max_xfer_limit_by_reg_mps = (ep_num == 0) ? TRU_DWC2_DEV_EP_EP0_MAX_PACKET_COUNT * mps : hwcfg->max_packet_count * mps;  // Multiple of max packet size
 	uint32_t max_xfer_limit = (max_xfer_limit_by_reg_size < max_xfer_limit_by_reg_mps) ? max_xfer_limit_by_reg_size : max_xfer_limit_by_reg_mps;  // Select the smaller size
 
 	switch(dma_mode){
@@ -1290,7 +1292,8 @@ uint32_t tru_dwc2_max_xfer_epin(void *usb_base_addr, uint8_t ep_num, uint32_t xf
 			if(txfifo_freespace == 0) return 0;
 			if(max_xfer_size > txfifo_freespace) max_xfer_size = txfifo_freespace;
 
-			// Limitation of some versions (e.g. 3.30a): only a maximum of seven packets can be pushed into the TXFIFO - most likely related to the 3-bit packet counter size of the DIEPTSIZ register
+			// In slave mode (manual FIFO transfer mode) there is a hardware limitation that appears to be related to in internal
+			// fifo queue counter. Only a maximum of n packets can be pushed into the TXFIFO at once (i.e. together with DIEPTSIZx).
 #ifdef TRU_DWC2_DEV_MAX_TXFIFO_PACKETS
 			if(max_xfer_size > TRU_DWC2_DEV_MAX_TXFIFO_PACKETS * mps) max_xfer_size = TRU_DWC2_DEV_MAX_TXFIFO_PACKETS * mps;
 #endif
@@ -1329,12 +1332,12 @@ uint32_t tru_dwc2_max_xfer_epin(void *usb_base_addr, uint8_t ep_num, uint32_t xf
 	- register size field limit
 	- register packet field count limit
 */
-uint32_t tru_dwc2_max_xfer_epout(void *usb_base_addr, uint8_t ep_num, uint32_t xfer_size, uint32_t ep_xfer_limit, uint16_t mps, tru_dwc2_dma_mode_t dma_mode, uint32_t max_packet_count, uint32_t max_transfer_size){
+uint32_t tru_dwc2_get_max_xfer_epout(void *usb_base_addr, uint8_t ep_num, uint32_t xfer_size, uint32_t ep_xfer_limit, uint16_t mps, tru_dwc2_dma_mode_t dma_mode, tru_dwc2_hwcfg_t *hwcfg){
 	if(dma_mode == TRU_DWC2_DMA_MODE_SG) return xfer_size;  // This is handled by the SGDMA descriptor function instead
 
 	uint32_t max_xfer_size = (ep_xfer_limit == 0) ? xfer_size : (xfer_size > ep_xfer_limit) ? ep_xfer_limit : xfer_size;
-	uint32_t max_xfer_limit_by_reg_size = (ep_num == 0) ? TRU_DWC2_DOEPTSIZ0_XFERSIZE_SET_MSK / mps * mps : max_transfer_size / mps * mps;  // Multiple of max packet size
-	uint32_t max_xfer_limit_by_reg_mps = (ep_num == 0) ? TRU_DWC2_DEV_EP_EP0_MAX_PACKET_COUNT * mps : max_packet_count * mps;  // Multiple of max packet size
+	uint32_t max_xfer_limit_by_reg_size = (ep_num == 0) ? TRU_DWC2_DOEPTSIZ0_XFERSIZE_SET_MSK / mps * mps : hwcfg->max_transfer_size / mps * mps;  // Multiple of max packet size
+	uint32_t max_xfer_limit_by_reg_mps = (ep_num == 0) ? TRU_DWC2_DEV_EP_EP0_MAX_PACKET_COUNT * mps : hwcfg->max_packet_count * mps;  // Multiple of max packet size
 	uint32_t max_xfer_limit = (max_xfer_limit_by_reg_size < max_xfer_limit_by_reg_mps) ? max_xfer_limit_by_reg_size : max_xfer_limit_by_reg_mps;  // Select the smaller size
 
 	switch(dma_mode){
@@ -2380,21 +2383,22 @@ void tru_dwc2_read_fifo_discard(void *usb_base_addr, uint16_t len){
 // In FIFO mode a write will push the data into the FIFO
 void tru_dwc2_write_fifo(void *usb_base_addr, uint8_t ep_num, void *src, uint16_t len){
 	uint32_t *src32 = src;
+	uint8_t fifonum = TRU_DWC2_DIEPCTL_REG(usb_base_addr, ep_num)->bits.txfnum;  // Get FIFO number assigned to the Endpoint
 
 	// Write 32-bit words
 	uint32_t word_count = len >> 2;  // Divide by 4
 	while(word_count--){
-		*TRU_DWC2_DEV_DFIFO_TX_ADDR(usb_base_addr, ep_num) = rd32_unaligned(src32);  // Write 4 bytes into FIFO
+		*TRU_DWC2_DEV_DFIFO_TX_ADDR(usb_base_addr, fifonum) = rd32_unaligned(src32);  // Write 4 bytes into FIFO
 		src32++;
 	}
 
-	// Write remaining bytes 1 to 3
+	// Write remaining bytes 1 to 3 zero padded as a word
 	uint8_t rem_bytes = len & 0x03;
 	if(rem_bytes){
 		uint32_t word_bytes = ((uint8_t *)src32)[0];
 		if(rem_bytes > 1) word_bytes |= (((uint8_t *)src32)[1] << 8);
 		if(rem_bytes > 2) word_bytes |= (((uint8_t *)src32)[2] << 16);
-		*TRU_DWC2_DEV_DFIFO_TX_ADDR(usb_base_addr, ep_num) = word_bytes;  // Write 4 bytes (padded) into FIFO
+		*TRU_DWC2_DEV_DFIFO_TX_ADDR(usb_base_addr, fifonum) = word_bytes;  // Write 4 bytes (padded) into FIFO
 	}
 }
 
@@ -2407,14 +2411,14 @@ void tru_dwc2_glob_intr_disable(void *usb_base_addr){
 	TRU_DWC2_GAHBCFG_REG(usb_base_addr)->bits.glblintrmsk = 0;
 }
 
-uint32_t tru_dwc2_dev_epin_xferred_size(void *usb_base_addr, uint8_t ep_num, uint32_t prev_xfersize, uint32_t max_transfer_size_mask){
-	if(ep_num == 0) return (prev_xfersize - TRU_DWC2_DIEPTSIZ0_REG(usb_base_addr)->bits.xfersize) & TRU_DWC2_DIEPTSIZ0_XFERSIZE_SET_MSK;
-	return (prev_xfersize - TRU_DWC2_DIEPTSIZ_REG(usb_base_addr, ep_num)->bits.xfersize) & max_transfer_size_mask;
+uint32_t tru_dwc2_dev_epin_xferred_size(void *usb_base_addr, uint8_t ep_num, uint32_t total_xfersize, uint32_t max_transfer_size_mask){
+	if(ep_num == 0) return (total_xfersize - TRU_DWC2_DIEPTSIZ0_REG(usb_base_addr)->bits.xfersize) & TRU_DWC2_DIEPTSIZ0_XFERSIZE_SET_MSK;
+	return (total_xfersize - TRU_DWC2_DIEPTSIZ_REG(usb_base_addr, ep_num)->bits.xfersize) & max_transfer_size_mask;
 }
 
-uint32_t tru_dwc2_dev_epout_xferred_size(void *usb_base_addr, uint8_t ep_num, uint32_t prev_xfersize, uint32_t max_transfer_size_mask){
-	if(ep_num == 0) return (prev_xfersize - TRU_DWC2_DOEPTSIZ0_REG(usb_base_addr)->bits.xfersize) & TRU_DWC2_DOEPTSIZ0_XFERSIZE_SET_MSK;
-	return (prev_xfersize - TRU_DWC2_DOEPTSIZ_REG(usb_base_addr, ep_num)->bits.xfersize) & max_transfer_size_mask;
+uint32_t tru_dwc2_dev_epout_xferred_size(void *usb_base_addr, uint8_t ep_num, uint32_t total_xfersize, uint32_t max_transfer_size_mask){
+	if(ep_num == 0) return (total_xfersize - TRU_DWC2_DOEPTSIZ0_REG(usb_base_addr)->bits.xfersize) & TRU_DWC2_DOEPTSIZ0_XFERSIZE_SET_MSK;
+	return (total_xfersize - TRU_DWC2_DOEPTSIZ_REG(usb_base_addr, ep_num)->bits.xfersize) & max_transfer_size_mask;
 }
 
 /*

@@ -45,7 +45,7 @@ void tru_usb_pc_init(
 	//pc->txfifo_mode = TRU_DWC2_TXFIFO_SHARED;
 	pc->speed_sel = speed_sel;
 	pc->sof_per_sec = 1000;  // Default to low speed & full speed frame rate
-	pc->sof_div = 1;
+	pc->sof_per_ms = 1;  // Default to low speed & full speed frame rate
 	//pc->speed = TRU_DWC2_DEV_DSTS_ENUMSPD_LS6;  // Low speed
 	pc->speed = 0xff;  // No speed
 	pc->state = TRU_USB_PC_DEV_STATE_NONE;
@@ -182,7 +182,8 @@ void tru_usb_pc_init_hw(tru_usb_pc_t *pc){
 	// After a reset, wait for the AHB master to become idle before starting any operation
 	tru_dwc2_ahb_master_busy_wait(pc->base_addr);
 
-	tru_dwc2_init_gusbcfg_phy(pc->base_addr, &pc->phy, pc->otg_id_pin_supported);
+	// GDFIFOCFG[31:16] field is the FIFO total size when this register is at the default value, also this is set back to default when the controller is reset
+	pc->hwcfg.fifo_total_size_words = tru_dwc2_get_gdfifocfg(pc->base_addr, &pc->hwcfg);
 
 	// Setup global USB AHB configuration settings
 	tru_dwc2_init_gahbcfg(pc->base_addr, pc->dma_mode);
@@ -239,9 +240,9 @@ void tru_usb_pc_init_hw(tru_usb_pc_t *pc){
 			pc->eps.epos[14].mps,
 			pc->eps.epos[15].mps
 		};
-		tru_dwc2_init_fifo_dedicated(pc->base_addr, epins_mps, epouts_mps, pc->hwcfg.num_dev_in_ep, pc->hwcfg.num_dev_ep, pc->hwcfg.fifo_size_words);
+		tru_dwc2_init_fifo_dedicated(pc->base_addr, epins_mps, epouts_mps, pc->hwcfg.num_dev_in_ep, pc->hwcfg.num_dev_ep, pc->hwcfg.fifo_usable_size_words);
 	}else{
-		tru_dwc2_init_fifo_shared(pc->base_addr, pc->hwcfg.num_dev_in_ep, pc->hwcfg.num_dev_ep, pc->hwcfg.fifo_size_words);
+		tru_dwc2_init_fifo_shared(pc->base_addr, pc->hwcfg.num_dev_in_ep, pc->hwcfg.num_dev_ep, pc->hwcfg.fifo_usable_size_words);
 	}
 
 	tru_dwc2_clr_globalinnak_np(pc->base_addr);
@@ -364,11 +365,11 @@ void tru_usb_pc_enable_xfer_epin(tru_usb_pc_t *pc, uint8_t ep_num, tru_dwc2_stal
 	switch(pc->dma_mode){
 		case TRU_DWC2_DMA_MODE_FF:
 			ep->xfer_buf = (uint8_t *)ep->lxfer.chunk.buffers[0].buf + ep->lxfer.chunk.total_xferred_size;
-			ep->xfer_size = tru_dwc2_max_xfer_epin(pc->base_addr, ep_num, xfer_size, ep->lxfer.ep_xfer_limit, ep->mps, pc->dma_mode, pc->txfifo_mode, pc->hwcfg.max_packet_count, pc->hwcfg.max_transfer_size);  // Calculate maximum allowed transfer size
+			ep->xfer_size = tru_dwc2_get_max_xfer_epin(pc->base_addr, ep_num, xfer_size, ep->lxfer.ep_xfer_limit, ep->mps, pc->dma_mode, pc->txfifo_mode, &pc->hwcfg);  // Calculate maximum allowed transfer size
 			break;
 		case TRU_DWC2_DMA_MODE_SB:
 			ep->xfer_buf = (uint8_t *)ep->lxfer.chunk.buffers[0].buf + ep->lxfer.chunk.total_xferred_size;
-			ep->xfer_size = tru_dwc2_max_xfer_epin(pc->base_addr, ep_num, xfer_size, ep->lxfer.ep_xfer_limit, ep->mps, pc->dma_mode, pc->txfifo_mode, pc->hwcfg.max_packet_count, pc->hwcfg.max_transfer_size);  // Calculate maximum allowed transfer size
+			ep->xfer_size = tru_dwc2_get_max_xfer_epin(pc->base_addr, ep_num, xfer_size, ep->lxfer.ep_xfer_limit, ep->mps, pc->dma_mode, pc->txfifo_mode, &pc->hwcfg);  // Calculate maximum allowed transfer size
 
 			// Cache coherence maintenance before starting the SB DMA operation
 			// We clean the data buffer to ensure the DMA controller can see the changes we made
@@ -442,11 +443,11 @@ void tru_usb_pc_enable_xfer_epout(tru_usb_pc_t *pc, uint8_t ep_num, tru_dwc2_sta
 	switch(pc->dma_mode){
 		case TRU_DWC2_DMA_MODE_FF:
 			ep->xfer_buf = (uint8_t *)ep->lxfer.chunk.buffers[0].buf + ep->lxfer.chunk.total_xferred_size;
-			ep->xfer_size = tru_dwc2_max_xfer_epout(pc->base_addr, ep_num, xfer_size, ep->lxfer.ep_xfer_limit, ep->mps, pc->dma_mode, pc->hwcfg.max_packet_count, pc->hwcfg.max_transfer_size);  // Calculate maximum allowed transfer size
+			ep->xfer_size = tru_dwc2_get_max_xfer_epout(pc->base_addr, ep_num, xfer_size, ep->lxfer.ep_xfer_limit, ep->mps, pc->dma_mode, &pc->hwcfg);  // Calculate maximum allowed transfer size
 			break;
 		case TRU_DWC2_DMA_MODE_SB:
 			ep->xfer_buf = (uint8_t *)ep->lxfer.chunk.buffers[0].buf + ep->lxfer.chunk.total_xferred_size;
-			ep->xfer_size = tru_dwc2_max_xfer_epout(pc->base_addr, ep_num, xfer_size, ep->lxfer.ep_xfer_limit, ep->mps, pc->dma_mode, pc->hwcfg.max_packet_count, pc->hwcfg.max_transfer_size);  // Calculate maximum allowed transfer size
+			ep->xfer_size = tru_dwc2_get_max_xfer_epout(pc->base_addr, ep_num, xfer_size, ep->lxfer.ep_xfer_limit, ep->mps, pc->dma_mode, &pc->hwcfg);  // Calculate maximum allowed transfer size
 
 			// Seems another hardware bug, for some reason we need to invalidate or clean the receive data buffer before we receive data!
 			// Normally, you would only need to invalidate after receiving the data.
@@ -671,9 +672,9 @@ void tru_usb_pc_receive_sr(tru_usb_pc_t *pc, uint8_t ep_num, tru_dwc2_stall_t st
 	bool enable = true;
 
 	if(ep_num == 0){
-		// For the SETUP stage and STATUS OUT stage we must not clear the NAK mode.  NAK mode is cleared only for the DATA OUT stage
+		// For the SETUP stage and STATUS OUT stage we must not clear the NAK mode, i.e. enable NAK mode.  NAK mode is cleared only for the DATA OUT stage
 		if(pc->eps.epos[0].next_control_stage == TRU_USB_PC_EP_CONTROL_STAGE_SETUP || pc->eps.epos[0].next_control_stage == TRU_USB_PC_EP_CONTROL_STAGE_STATUS_OUT){
-			nak = TRU_DWC2_NAK_SET;  // // Enable NAK mode
+			nak = TRU_DWC2_NAK_SET;  // Enable NAK mode
 			//nak = TRU_DWC2_NAK_CURRENT;  // Use current NAK mode
 		}
 	}
@@ -804,7 +805,7 @@ void tru_usb_pc_process_txfifo_write(tru_usb_pc_t *pc, uint8_t ep_num){
 	tru_usb_pc_epi_t *epin = &pc->eps.epis[ep_num];
 
 	if(epin->lxfer.chunk.total_xferred_size < epin->lxfer.chunk.total_xfer_size){
-		uint32_t max_xfer_size = tru_dwc2_max_xfer_epin(pc->base_addr, epin->num, epin->lxfer.chunk.total_xfer_size - epin->lxfer.chunk.total_xferred_size, epin->lxfer.ep_xfer_limit, epin->mps, pc->dma_mode, pc->txfifo_mode, pc->hwcfg.max_packet_count, pc->hwcfg.max_transfer_size);  // Calculate maximum allowed transfer size
+		uint32_t max_xfer_size = tru_dwc2_get_max_xfer_epin(pc->base_addr, epin->num, epin->lxfer.chunk.total_xfer_size - epin->lxfer.chunk.total_xferred_size, epin->lxfer.ep_xfer_limit, epin->mps, pc->dma_mode, pc->txfifo_mode, &pc->hwcfg);  // Calculate maximum allowed transfer size
 		if(max_xfer_size){
 			tru_dwc2_write_fifo(pc->base_addr, epin->num, epin->xfer_buf, max_xfer_size);  // Write data to TXFIFO data (push to TXFIFO)
 			tru_usb_pc_update_lxfer_details_epin(pc, epin->num);
@@ -896,7 +897,8 @@ void tru_usb_pc_update_lxfer_details_epin(tru_usb_pc_t *pc, uint8_t ep_num){
 
 	switch(pc->dma_mode){
 		case TRU_DWC2_DMA_MODE_FF:
-			ep->xferred_size = ep->xfer_size;
+			//ep->xferred_size = ep->xfer_size;
+			ep->xferred_size = tru_dwc2_dev_epin_xferred_size(pc->base_addr, ep_num, ep->xfer_size, pc->hwcfg.max_transfer_size);
 			ep->lxfer.chunk.buffers[0].xferred_size = ep->xferred_size;
 			break;
 		case TRU_DWC2_DMA_MODE_SB:
@@ -1049,7 +1051,7 @@ void tru_usb_pc_setup_set_config_act_ep(tru_usb_pc_t *pc, tru_usb_config_t *req_
 
 	if(pc->txfifo_mode == TRU_DWC2_TXFIFO_DEDICATED){
 		// Reallocate dynamic FIFOs
-		tru_dwc2_realloc_fifo(pc->base_addr, pc->dma_mode, epins_mps, epouts_mps, true, pc->hwcfg.num_dev_in_ep, pc->hwcfg.num_dev_ep, pc->hwcfg.fifo_size_words);
+		tru_dwc2_realloc_fifo(pc->base_addr, pc->dma_mode, epins_mps, epouts_mps, true, pc->hwcfg.num_dev_in_ep, pc->hwcfg.num_dev_ep, pc->hwcfg.fifo_usable_size_words);
 	}
 
 	pc->configs.prev_config = pc->configs.curr_config;
@@ -1068,7 +1070,7 @@ void tru_usb_pc_setup_set_config_deact_ep(tru_usb_pc_t *pc){
 		}
 
 		pc->configs.prev_config = pc->configs.curr_config;
-		pc->configs.curr_config = NULL;
+		//pc->configs.curr_config = NULL;
 	}
 }
 
@@ -1210,7 +1212,7 @@ void tru_usb_pc_setup_set_interface_act_ep(tru_usb_pc_t *pc, tru_usb_config_t *r
 	}
 
 	// Reallocate dynamic FIFOs
-	if(realloc_fifo) tru_dwc2_realloc_fifo(pc->base_addr, pc->dma_mode, epins_mps, epouts_mps, true, pc->hwcfg.num_dev_in_ep, pc->hwcfg.num_dev_ep, pc->hwcfg.fifo_size_words);
+	if(realloc_fifo) tru_dwc2_realloc_fifo(pc->base_addr, pc->dma_mode, epins_mps, epouts_mps, true, pc->hwcfg.num_dev_in_ep, pc->hwcfg.num_dev_ep, pc->hwcfg.fifo_usable_size_words);
 
 	// Activate the endpoints in the interfaces
 	for(i = 0; i < req_alt_setting->eps.num_endpoints; i++){
@@ -1277,7 +1279,7 @@ void tru_usb_pc_setup_set_interface_deact_ep(tru_usb_pc_t *pc, tru_usb_interface
 				pc->eps.epis[ep_num].status &= TRU_USB_STATUS_EP_HALT_MSK_CLR;  // The endpoint status Halt feature is reset to zero after either a SetConfiguration or SetInterface setup request
 				pc->eps.epis[ep_num].mps = 0;
 				pc->eps.epis[ep_num].is_activated = false;
-				pc->eps.epis[ep_num].curr_alt_setting = NULL;
+				//pc->eps.epis[ep_num].curr_alt_setting = NULL;
 			}else{
 				// Disable OUT endpoint
 				//tru_dwc2_deactivate_epout(pc->base_addr, ep_num, pc->dma_mode);
@@ -1288,14 +1290,13 @@ void tru_usb_pc_setup_set_interface_deact_ep(tru_usb_pc_t *pc, tru_usb_interface
 				pc->eps.epos[ep_num].status &= TRU_USB_STATUS_EP_HALT_MSK_CLR;  // The endpoint status Halt feature is reset to zero after either a SetConfiguration or SetInterface setup request
 				pc->eps.epos[ep_num].mps = 0;
 				pc->eps.epos[ep_num].is_activated = false;
-				pc->eps.epos[ep_num].curr_alt_setting = NULL;
+				//pc->eps.epos[ep_num].curr_alt_setting = NULL;
 			}
 		}
 		//tru_dwc2_flush_rxfifo_wait(pc->base_addr);
 
 		req_interface->alt_settings.prev_alt_setting = req_interface->alt_settings.curr_alt_setting;
-		// Comment this out if you want the configuration to remember its current alternate setting when you deactivate the configuration
-		req_interface->alt_settings.curr_alt_setting = req_interface->alt_settings.items;  // Default to alternate setting 0
+		//req_interface->alt_settings.curr_alt_setting = NULL;
 	}
 }
 

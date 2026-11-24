@@ -13,7 +13,7 @@ typedef struct{
 	uint32_t write_len;
 }msos_winusb_dual_req_t;
 
-// Weak function prototypes
+// Prototypes with weak implementation.  Override at application level
 __attribute__((weak)) void msos_winusb_multi_cb_setup_buffers(void);
 
 // Function prototypes

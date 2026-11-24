@@ -66,6 +66,7 @@ SRCS := \
 	$(wildcard $(APP_SRC_PATH1)/trulib/c5soc/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/trulib/usb/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/trulib/usb/synopsys/*.c) \
+	$(wildcard $(APP_SRC_PATH1)/trulib/usb/synopsys/port/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/trulib/usb/dclass/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/trulib/usb_examples/device/*.c) \
 	$(wildcard $(APP_SRC_PATH1)/tru_usb_device/common/*.c) \
@@ -81,6 +82,10 @@ INCS := \
 	-I$(APP_SRC_PATH1) \
 	-I$(APP_SRC_PATH1)/bsp \
 	-I$(APP_SRC_PATH1)/trulib \
+	-I$(APP_SRC_PATH1)/trulib/usb \
+	-I$(APP_SRC_PATH1)/trulib/usb/synopsys \
+	-I$(APP_SRC_PATH1)/trulib/usb/synopsys/port \
+	-I$(APP_SRC_PATH1)/trulib/usb/dclass \
 	-I$(APP_SRC_PATH1)/CMSIS/Core/Include \
 	-I$(APP_SRC_PATH1)/CMSIS/Core/Include/a-profile \
 	-I$(APP_SRC_PATH1)/CMSIS/Device/c5soc/include

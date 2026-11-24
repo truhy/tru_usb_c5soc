@@ -43,6 +43,7 @@ extern "C" {
 // ====================
 
 // Manufacturer default defines.  You can override these defines by defining it in the manufacturer port file
+
 #if !defined(TRU_DWC2_DOEPINT_STPKTRX_SUPPORTED)
 	#define TRU_DWC2_DOEPINT_STPKTRX_SUPPORTED 1
 #endif
@@ -58,7 +59,7 @@ extern "C" {
 
 // Update dxepctl register oddeven bit method: 0 = by eonum register bit, 1 = by frame number
 #if !defined(TRU_DWC2_UPDATE_DXEPCTL_ODDEVEN_BY_SOFFN)
-	#define TRU_DWC2_UPDATE_DXEPCTL_ODDEVEN_BY_SOFFN 1
+	#define TRU_DWC2_UPDATE_DXEPCTL_ODDEVEN_BY_SOFFN 0
 #endif
 
 #ifdef __cplusplus

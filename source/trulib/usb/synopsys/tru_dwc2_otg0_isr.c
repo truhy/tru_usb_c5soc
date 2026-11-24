@@ -1090,7 +1090,7 @@ static void tru_dwc2_pc0_isr_enumdone(tru_usb_pc_t *pc){
 	/*
 	epins_mps[0] = pc->eps.epis[0].mps;
 	epouts_mps[0] = pc->eps.epos[0].mps;
-	tru_dwc2_realloc_fifo(pc->base_addr, pc->dma_mode, epins_mps, epouts_mps, false, pc->hwcfg.num_dev_in_ep, pc->hwcfg.num_dev_ep, pc->hwcfg.fifo_size_words);
+	tru_dwc2_realloc_fifo(pc->base_addr, pc->dma_mode, epins_mps, epouts_mps, false, pc->hwcfg.num_dev_in_ep, pc->hwcfg.num_dev_ep, pc->hwcfg.fifo_usable_size_words);
 	*/
 
 	pc->eps.epos[0].control_stage = TRU_USB_PC_EP_CONTROL_STAGE_SETUP;
@@ -1104,11 +1104,26 @@ static void tru_dwc2_pc0_isr_enumdone(tru_usb_pc_t *pc){
 
 #if defined(TRU_CFG_USB_LOG_SETUP_TEXT) && TRU_CFG_USB_LOG_SETUP_TEXT == 1
 	switch(pc->speed){
-		case TRU_DWC2_DSTS_ENUMSPD_HS3060: pc->sof_per_sec = 8000; pc->sof_div = 8; LOG("INIT: Speed = HS\n"); break;
+		case TRU_DWC2_DSTS_ENUMSPD_HS3060:
+			pc->sof_per_sec = 8000;
+			pc->sof_per_ms = 8;
+			LOG("INIT: Speed = HS\n");
+			break;
 		case TRU_DWC2_DSTS_ENUMSPD_FS3060:
-		case TRU_DWC2_DSTS_ENUMSPD_FS48: pc->sof_per_sec = 1000; pc->sof_div = 1; LOG("INIT: Speed = FS\n"); break;
-		case TRU_DWC2_DSTS_ENUMSPD_LS6: pc->sof_per_sec = 1000; pc->sof_div = 1; LOG("INIT: Speed = LS\n"); break;
-		default: pc->sof_per_sec = 1000; pc->sof_div = 1; LOG("INIT: Speed = %u (invalid)\n", pc->speed);
+		case TRU_DWC2_DSTS_ENUMSPD_FS48:
+			pc->sof_per_sec = 1000;
+			pc->sof_per_ms = 1;
+			LOG("INIT: Speed = FS\n");
+			break;
+		case TRU_DWC2_DSTS_ENUMSPD_LS6:
+			pc->sof_per_sec = 1000;
+			pc->sof_per_ms = 1;
+			LOG("INIT: Speed = LS\n");
+			break;
+		default:
+			pc->sof_per_sec = 1000;
+			pc->sof_per_ms = 1;
+			LOG("INIT: Speed = %u (invalid)\n", pc->speed);
 	}
 #endif
 

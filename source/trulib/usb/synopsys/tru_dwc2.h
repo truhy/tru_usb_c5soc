@@ -104,6 +104,12 @@ __attribute__((always_inline)) static inline void tru_dwc2_update_frame_target(v
 	//*frame_target = (*frame_target - *frame_target % interval + interval) & limit;  // Jump to next target frame by an increment of endpoint interval
 }
 
+__attribute__((always_inline)) static inline
+// GDFIFOCFG[31:16] field is the FIFO total size when this register is at the default value, also this is set back to default when the controller is reset
+uint32_t tru_dwc2_get_gdfifocfg(void *usb_base_addr, tru_dwc2_hwcfg_t *hwcfg){
+	return TRU_DWC2_GDFIFOCFG_REG(usb_base_addr)->bits.gdfifocfg;
+}
+
 void tru_dwc2_get_hwcfg_snpsid(void *usb_base_addr, tru_dwc2_hwcfg_t *hwcfg);
 void tru_dwc2_get_hwcfg(void *usb_base_addr, tru_dwc2_hwcfg_t *hwcfg);
 void tru_dwc2_init_intstatus(void *usb_base_addr, uint32_t num_dev_in_ep, uint32_t num_dev_out_ep);
@@ -114,7 +120,6 @@ void tru_dwc2_realloc_fifo(void *usb_base_addr, tru_dwc2_dma_mode_t dma_mode, ui
 void tru_dwc2_grstctl_reset(void *usb_base_addr, uint32_t snpsid);
 void tru_dwc2_init_gahbcfg(void *usb_base_addr, tru_dwc2_dma_mode_t dma_mode);
 void tru_dwc2_init_gusbcfg_phy(void *usb_base_addr, tru_dwc2_phy_t *phy, bool forcedev);
-void tru_dwc2_init_gusbcfg(void *usb_base_addr);
 void tru_dwc2_force_devmode(void *usb_base_addr);
 void tru_dwc2_force_hostmode(void *usb_base_addr);
 void tru_dwc2_init_gccfg(void *usb_base_addr, tru_dwc2_phy_t *phy);
@@ -159,8 +164,8 @@ uint8_t tru_dwc2_ep0_mps_to_regcode(uint8_t mps);
 uint8_t tru_dwc2_ep0_regcode_to_mps(uint8_t code);
 uint16_t tru_dwc2_ep_mps_xfer_to_pkt_cnt(uint16_t mps, uint32_t xfer_size);
 uint16_t tru_dwc2_get_txfifo_freespace_words(void *usb_base_addr, tru_dwc2_txfifo_mode_t txfifo_mode, uint8_t ep_num);
-uint32_t tru_dwc2_max_xfer_epin(void *usb_base_addr, uint8_t ep_num, uint32_t xfer_size, uint32_t ep_xfer_limit, uint16_t mps, tru_dwc2_dma_mode_t dma_mode, tru_dwc2_txfifo_mode_t txfifo_mode, uint32_t max_packet_count, uint32_t max_transfer_size);
-uint32_t tru_dwc2_max_xfer_epout(void *usb_base_addr, uint8_t ep_num, uint32_t xfer_size, uint32_t ep_xfer_limit, uint16_t mps, tru_dwc2_dma_mode_t dma_mode, uint32_t max_packet_count, uint32_t max_transfer_size);
+uint32_t tru_dwc2_get_max_xfer_epin(void *usb_base_addr, uint8_t ep_num, uint32_t xfer_size, uint32_t ep_xfer_limit, uint16_t mps, tru_dwc2_dma_mode_t dma_mode, tru_dwc2_txfifo_mode_t txfifo_mode, tru_dwc2_hwcfg_t *hwcfg);
+uint32_t tru_dwc2_get_max_xfer_epout(void *usb_base_addr, uint8_t ep_num, uint32_t xfer_size, uint32_t ep_xfer_limit, uint16_t mps, tru_dwc2_dma_mode_t dma_mode, tru_dwc2_hwcfg_t *hwcfg);
 void tru_dwc2_update_oddeven_epin(void *usb_base_addr, uint8_t ep_num, uint8_t interval, uint32_t *frame_target);
 void tru_dwc2_update_oddeven_epout(void *usb_base_addr, uint8_t ep_num, uint8_t interval, uint32_t *frame_target);
 void tru_usb_dwc2_update_frame_target_sgdma(tru_usb_lxfer_t *lxfer, void *usb_base_addr, uint32_t interval, uint32_t *frame_target);
@@ -236,8 +241,8 @@ void tru_dwc2_read_fifo_discard(void *usb_base_addr, uint16_t len);
 void tru_dwc2_write_fifo(void *usb_base_addr, uint8_t ep_num, void *src, uint16_t len);
 void tru_dwc2_glob_intr_enable(void *usb_base_addr);
 void tru_dwc2_glob_intr_disable(void *usb_base_addr);
-uint32_t tru_dwc2_dev_epin_xferred_size(void *usb_base_addr, uint8_t ep_num, uint32_t prev_xfersize, uint32_t max_transfer_size_mask);
-uint32_t tru_dwc2_dev_epout_xferred_size(void *usb_base_addr, uint8_t ep_num, uint32_t prev_xfersize, uint32_t max_transfer_size_mask);
+uint32_t tru_dwc2_dev_epin_xferred_size(void *usb_base_addr, uint8_t ep_num, uint32_t total_xfersize, uint32_t max_transfer_size_mask);
+uint32_t tru_dwc2_dev_epout_xferred_size(void *usb_base_addr, uint8_t ep_num, uint32_t total_xfersize, uint32_t max_transfer_size_mask);
 bool tru_dwc2_is_epin_iso_incompl(void *usb_base_addr, uint8_t dma_mode, uint8_t ep_num, uint32_t interval, uint32_t frame_num, uint32_t frame_target, uint32_t limit);
 bool tru_dwc2_is_epout_iso_incompl(void *usb_base_addr, uint8_t dma_mode, uint8_t ep_num, uint32_t interval, uint32_t frame_num, uint32_t frame_target, uint32_t limit);
 uint32_t tru_dwc2_get_framenum(void *usb_base_addr);

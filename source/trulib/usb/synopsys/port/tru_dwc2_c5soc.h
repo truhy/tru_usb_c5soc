@@ -48,6 +48,8 @@ extern "C" {
 // In USB peripheral device mode, setting the RX FIFO size less than this will cause enumeration to fail, specifically the EP0 status out (ZLP) never completes, i.e. keeps NAKing and no transfer complete interrupt
 #define TRU_DWC2_DEV_MIN_RXFIFO_WORDSIZE 119
 
+#define TRU_DWC2_DEV_MAX_TXFIFO_PACKETS 7
+
 // ========
 // Hardware
 // ========

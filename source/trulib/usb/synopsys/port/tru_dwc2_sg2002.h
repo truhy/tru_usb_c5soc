@@ -40,6 +40,12 @@ extern "C" {
 
 #include "sg2002/system.h"
 
+// ====================
+// Hardware limitations
+// ====================
+
+#define TRU_DWC2_DEV_MAX_TXFIFO_PACKETS 7
+
 // ========
 // Hardware
 // ========

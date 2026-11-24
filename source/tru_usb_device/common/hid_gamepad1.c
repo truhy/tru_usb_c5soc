@@ -2,7 +2,7 @@
 #include "tru_logger.h"
 #include <stdlib.h>
 
-// Weak function prototypes
+// Prototypes with weak implementation.  Override at application level
 __attribute__((weak)) void hid_gamepad1_update_controller(tru_hid_gamepad1_input_report_t *report);
 
 // Function prototypes
@@ -80,6 +80,10 @@ void hid_gamepad1_update_controller(tru_hid_gamepad1_input_report_t *report){
 	#endif
 	*/
 }
+
+// ================
+// Helper functions
+// ================
 
 void hid_gamepad1_transmit_report(tru_usb_hid_t *hid, tru_usb_pc_epi_t *ep){
 	// ========================
